@@ -1,0 +1,132 @@
+header {
+	margin: 50px auto;
+	text-align: center;
+}
+
+header a {
+	text-decoration: none;
+	font: 16px Arial;
+	line-height: 20px;
+
+	color: white;
+	background-color: rgb(236, 196, 32);
+
+	height: 20px;
+
+	padding: 5px 10px;
+	border: 1px solid rgb(236, 196, 32);
+	border-radius: 5px;
+	box-shadow: 0 0 5px #999;
+}
+
+header a:hover {
+	border-color: rgb(241, 152, 84);
+	background-color: rgb(241, 152, 84);
+	box-shadow: 0 0 10px #999;
+}
+
+#board {
+	position: relative;
+	margin: 0 auto;
+	padding: 0;
+
+	width: 500px;
+	height: 500px;
+
+	border: 1px solid rgb(187, 176, 160);
+	border-radius: 5px;
+	background-color: rgb(187, 176, 160);
+}
+
+#board .cell {
+	float: left;
+	margin: 20px 0 0 20px;
+	padding: 0;
+
+	border-width: 1px;
+	border-radius: 5px;
+
+	width: 100px;
+	height: 100px;
+
+	font-family: Arial;
+	font-size: 70px;
+	
+	font-weight: bold;
+	line-height: 98px;
+	text-align: center;
+
+	/* 样式过渡效果 */
+	transition: all 0.2s;
+}
+
+/*  不同数字使用不同的样式  */
+
+#board .num-no {
+	border-color: rgb(204, 192, 180);
+	background-color: rgb(204, 192, 180);
+}
+
+#board .num-2 {
+	color: #888;
+	border-color: rgb(238, 228, 219);
+	background-color: rgb(238, 228, 219);
+}
+
+#board .num-4 {
+	color: #888;
+	border-color: rgb(236, 224, 198);
+	background-color: rgb(236, 224, 198);
+}
+
+#board .num-8 {
+	
+}
+
+#board .num-16 {
+	
+}
+
+#board .num-32 {
+	
+}
+
+#board .num-64 {
+	
+}
+
+#board .num-128 {
+	
+}
+
+#board .num-256 {
+	
+}
+
+#board .num-512 {
+	
+}
+
+#board .num-big {
+	
+}
+
+#message {
+	display: block;
+
+	line-height: 30px;
+	height: 30px;
+	width: 400px;
+	text-align: center;
+
+	margin: 50px auto 0;
+	padding: 0;
+
+	font: 20px Arial;
+	color: white;
+	background-color: #333;
+	opacity: 0.5;
+
+	z-index: 100;
+	display: none;
+}
