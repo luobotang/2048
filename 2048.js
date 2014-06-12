@@ -23,9 +23,11 @@ var Game = (function ($) {
 
 	// 检查并处理无法继续游戏的情况，若无法继续则结束当前一局游戏
 	function checkGameOver() {
-		if (!numbers.canMove()) {
+		// 检查无法继续合并的情况
+		if (!numbers.canMerge()) {
 			GameOver();
 		}
+		// todo: 检查是否有 2048
 	}
 
 	function GameOver() {
@@ -39,28 +41,20 @@ var Game = (function ($) {
 		e.preventDefault();
 		switch (e.keyCode) {
 			case 37: // left
-				if (numbers.canMoveLeft()) {
-					numbers.moveLeft();
-					afterMove();
-				}
+				numbers.moveLeft();
+				afterMove();
 				break;
 			case 38: // up
-				if (numbers.canMoveUp()) {
-					numbers.moveUp();
-					afterMove();
-				}
+				numbers.moveUp();
+				afterMove();
 				break;
 			case 39: // right
-				if (numbers.canMoveRight()) {
-					numbers.moveRight();
-					afterMove();
-				}
+				numbers.moveRight();
+				afterMove();
 				break;
 			case 40: // down
-				if (numbers.canMoveDown()) {
-					numbers.moveDown();
-					afterMove();
-				}
+				numbers.moveDown();
+				afterMove();
 				break;
 			default:
 				break;
@@ -68,6 +62,7 @@ var Game = (function ($) {
 	}
 
 	function afterMove() {
+		renderUI();
 		addRandomNumber();
 		renderUI();
 		checkGameOver();
@@ -86,6 +81,7 @@ var Game = (function ($) {
 
 	// 在随机的空闲位置添加 2 或 4
 	function addRandomNumber() {
+		console.log("Add random number");
 		var pos = getCellPosition(getRandomFreeCell());
 		numbers.set(pos.row, pos.col, getRandom2or4());
 	}

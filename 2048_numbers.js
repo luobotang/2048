@@ -1,6 +1,8 @@
 // 2048 游戏中的数据对象
 var Numbers = function () {
 	this.numbers = [[0,0,0,0], [0,0,0,0], [0,0,0,0], [0,0,0,0]];
+	this.rowCount = 4;
+	this.colCount = 4;
 }
 
 Numbers.prototype = {
@@ -14,18 +16,21 @@ Numbers.prototype = {
 		});
 	},
 	forEachRow: function (callback) {
-		if (!callback || !callback.call) return;
+		if (!$.isFunction(callback)) return;
 		this.numbers.forEach(function (row, rowIndex) {
 			callback(row, rowIndex);
 		});
 	},
 	// callback(col : array, colIndex : int)
 	forEachCol: function (callback) {
-		if (!callback || !callback.call) return;
-		for (var colIndex = 0; colIndex < 4; colIndex++) {
-			callback([0,0,0,0].map(function (zero, rowIndex) {
-				return numbers[rowIndex][colIndex];
-			}), colIndex);
+		if (!$.isFunction(callback)) return;
+
+		for (var colIndex = 0; colIndex < this.colCount; colIndex++) {
+			var col = [];
+			for (var rowIndex = 0; rowIndex < this.rowCount; rowIndex++) {
+				col.push(this.numbers[rowIndex][colIndex]);
+			}
+			callback(col, colIndex);
 		}
 	},
 	get: function (rowIndex, colIndex) {
@@ -46,42 +51,100 @@ Numbers.prototype = {
 		}
 		return false;
 	},
-	canMove: function () {
-		return this.canMoveLeft() ||
-			this.canMoveUp() ||
-			this.canMoveRight() ||
-			this.canMoveDown();
-	},
-	canMoveLeft: function () {
-		// todo
-		return true;
-	},
-	canMoveUp: function () {
-		// todo
-		return true;
-	},
-	canMoveRight: function () {
-		// todo
-		return true;
-	},
-	canMoveDown: function () {
-		// todo
-		return true;
-	},
 	moveLeft: function () {
-		// todo
+		var thisObj = this;
+		this.forEachRow(function (row, rowIndex) {
+			thisObj.mergeRow(row, rowIndex);
+		});
 		console.log("Move Left");
 	},
 	moveUp: function () {
-		// todo
+		var thisObj = this;
+		this.forEachCol(function (col, colIndex) {
+			thisObj.mergeCol(col, colIndex);
+		});
 		console.log("Move Up");
 	},
 	moveRight: function () {
-		// todo
+		var thisObj = this;
+		this.forEachRow(function (row, rowIndex) {
+			thisObj.mergeRow(row, rowIndex, false);
+		});
 		console.log("Move Right");
 	},
 	moveDown: function () {
-		// todo
+		var thisObj = this;
+		this.forEachCol(function (col, colIndex) {
+			thisObj.mergeCol(col, colIndex, false);
+		});
 		console.log("Move Down");
+	},
+	canMerge: function () {
+		try {
+			this.forEachRow(function (row, rowIndex) {
+				if (canMergeArray(row)) throw new Error("can merge row: " + rowIndex);
+			});
+			this.forEachCol(function (col, colIndex) {
+				if (canMergeArray(col)) throw new Error("can merge col: " + colIndex);
+			});
+		} catch (ex) {
+			return true;
+		}
+		return false;
+	},
+	canMergeArray: function (array) {
+		var len = array.length,
+			curr = 0,
+			next = curr + 1;
+		while (next < len) {
+			var currNum = array[curr],
+				nextNum = array[next];
+			if (currNum == 0 || nextNum == 0) return true;
+			if (currNum == nextNum) return true;
+			curr = next;
+			next = curr + 1;
+		}
+		return false;
+	},
+	mergeRow: function (row, rowIndex, ltr) {
+		this.mergeArray(row, rowIndex, true, ltr);
+	},
+	mergeCol: function (col, colIndex, ltr) {
+		this.mergeArray(col, colIndex, false, ltr);
+	},
+	// 根据 2048 规则，合并行或列的现有数字
+	mergeArray: function (array, rowOrColIndex, isRow, ltr) {
+		console.log("merge array: ", array.join(), " index: ", rowOrColIndex);
+		var ltr = ltr == null ? true : ltr,
+			len = array.length,
+			curr = ltr ? 0 : len - 1,
+			next = ltr ? curr + 1 : curr - 1;
+
+		// !BUG 仔细检查代码逻辑，确保没有无限循环问题
+		while (ltr ? next < len : next >= 0) {
+			var currRowIndex = isRow ? rowOrColIndex : curr,
+				currColIndex = isRow ? curr : rowOrColIndex,
+				nextRowIndex = isRow ? rowOrColIndex : next,
+				nextColIndex = isRow ? next : rowOrColIndex,
+				currNum = this.numbers[currRowIndex][currColIndex],
+				nextNum = this.numbers[nextRowIndex][nextColIndex];
+			if (nextNum == 0) {
+				next = ltr ? next + 1 : next - 1;
+				continue;
+			} else {
+				if (currNum == 0) {
+					this.numbers[currRowIndex][currColIndex] = nextNum;
+					this.numbers[nextRowIndex][nextColIndex] = 0;
+					next = ltr ? curr + 1 : curr - 1;
+					continue;
+				} else if (nextNum == currNum) {
+					this.numbers[currRowIndex][currColIndex] = currNum + currNum;
+					this.numbers[nextRowIndex][nextColIndex] = 0;
+				}
+				curr = ltr ? curr + 1 : curr - 1;
+				next = ltr ? curr + 1 : curr - 1;
+				continue;
+			}
+		}
 	}
 };
