@@ -71,7 +71,7 @@ var Game = (function ($) {
 	function renderUI() {
 		numbers.forEach(function (num, rowIndex, colIndex) {
 			var html = num == 0 ? "" : num,
-				className = "cell num-" + (num == 0 ? "no" : num > 512 ? "big" : num);
+				className = "cell num-" + (num == 0 ? "no" : num > 2048 ? "super" : num);
 			$("#cell-" + rowIndex + "-" + colIndex)
 				.html(html)
 				.removeClass()

@@ -33,9 +33,8 @@ header a:hover {
 	width: 500px;
 	height: 500px;
 
-	border: 1px solid rgb(187, 176, 160);
 	border-radius: 5px;
-	background-color: rgb(187, 176, 160);
+	background-color: #BBADA0;
 }
 
 #board .cell {
@@ -43,7 +42,6 @@ header a:hover {
 	margin: 20px 0 0 20px;
 	padding: 0;
 
-	border-width: 1px;
 	border-radius: 5px;
 
 	width: 100px;
@@ -60,75 +58,78 @@ header a:hover {
 	transition: all 0.2s;
 }
 
-/*  不同数字使用不同的样式  */
+/*  不同数字使用不同的样式
+	样式参考：http://gabrielecirulli.github.io/2048/style/main.css
+ */
 
 #board .num-no {
-	border-color: rgb(204, 192, 180);
-	background-color: rgb(204, 192, 180);
+	background-color: rgba(238, 228, 218, 0.35);
 }
 
 #board .num-2 {
 	color: #888;
-	border-color: rgb(238, 228, 219);
-	background-color: rgb(238, 228, 219);
+	background-color: #eee4da;
 }
 
 #board .num-4 {
 	color: #888;
-	border-color: rgb(236, 224, 198);
-	background-color: rgb(236, 224, 198);
+	background-color: #ede0c8;
 }
 
 #board .num-8 {
-	color: #888;
-	border-color: rgb(236, 224, 198);
-	background-color: rgb(236, 224, 198);
+	color: #f9f6f2;
+	background-color: #f2b179;
 }
 
 #board .num-16 {
-	color: #888;
-	border-color: rgb(236, 224, 198);
-	background-color: rgb(236, 224, 198);
+	color: #f9f6f2;
+	background-color: #f59563;
 }
 
 #board .num-32 {
-	color: #888;
-	border-color: rgb(236, 224, 198);
-	background-color: rgb(236, 224, 198);
+	color: #f9f6f2;
+	background-color: #f67c5f;
 }
 
 #board .num-64 {
-	color: #888;
-	border-color: rgb(236, 224, 198);
-	background-color: rgb(236, 224, 198);
+	color: #f9f6f2;
+	background-color: #f65e3b;
 }
 
 #board .num-128 {
 	font-size: 50px;
-	color: #888;
-	border-color: rgb(236, 224, 198);
-	background-color: rgb(236, 224, 198);
+	color: #f9f6f2;
+	background-color: #edcf72;
 }
 
 #board .num-256 {
 	font-size: 50px;
-	color: #888;
-	border-color: rgb(236, 224, 198);
-	background-color: rgb(236, 224, 198);
+	color: #f9f6f2;
+	background-color: #edcc61;
 }
 
 #board .num-512 {
 	font-size: 50px;
-	color: #888;
-	border-color: rgb(236, 224, 198);
-	background-color: rgb(236, 224, 198);
+	color: #f9f6f2;
+	background-color: #edc850;
 }
 
-#board .num-big {
+#board .num-1024 {
 	font-size: 40px;
-	color: #fff;
-	border-color: rgb(150, 120, 50);
-	background-color: rgb(150, 120, 50);
+	color: #f9f6f2;
+	background-color: #edc53f;
+}
+
+#board .num-2048 {
+	font-size: 40px;
+	color: #f9f6f2;
+	background-color: #edc22e;
+}
+
+#board .num-super {
+	font-size: 40px;
+	color: #f9f6f2;
+	background-color: #3c3a32;
 }
 
 #message {
