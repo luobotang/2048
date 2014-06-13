@@ -16,7 +16,7 @@ var Game = (function ($) {
 		renderUI();
 		// 监听键盘事件
 		if (!listening) {
-			$(document).on("keydown", onKeydown);
+			$('body').on("keydown", onKeydown);
 			listening = true;
 		}
 	}
@@ -70,8 +70,8 @@ var Game = (function ($) {
 
 	function renderUI() {
 		numbers.forEach(function (num, rowIndex, colIndex) {
-			var html = num == 0 ? "" : num,
-				className = "cell num-" + (num == 0 ? "no" : num > 2048 ? "super" : num);
+			var html = num === 0 ? "" : num,
+				className = "cell num-" + (num === 0 ? "no" : num > 2048 ? "super" : num);
 			$("#cell-" + rowIndex + "-" + colIndex)
 				.html(html)
 				.removeClass()
@@ -105,17 +105,9 @@ var Game = (function ($) {
 		};
 	}
 
-	//////////////////////////////////////////////////////
-	
-	function getRandomNumberIn4() {
-		return Math.floor(Math.random() * 4);
-	}
-
 	function getRandom2or4() {
 		return Math.random() < 0.5 ? 2 : 4;
 	}
-
-	//////////////////////////////////////////////////////
 
 	return {
 		newRound: newRound

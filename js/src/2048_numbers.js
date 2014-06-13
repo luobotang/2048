@@ -3,7 +3,7 @@ var Numbers = function () {
 	this.numbers = [[0,0,0,0], [0,0,0,0], [0,0,0,0], [0,0,0,0]];
 	this.rowCount = 4;
 	this.colCount = 4;
-}
+};
 
 Numbers.prototype = {
 	// callback(number, rowIndex, colIndex)
@@ -39,7 +39,8 @@ Numbers.prototype = {
 	},
 	set: function (rowIndex, colIndex, number) {
 		var row = this.numbers[rowIndex];
-		row && typeof row[rowIndex] == 'number' && (row[colIndex] = number);
+		if (row && typeof row[rowIndex] == 'number')
+			row[colIndex] = number;
 	},
 	hasZero: function () {
 		try {
@@ -80,12 +81,13 @@ Numbers.prototype = {
 		console.log("Move Down");
 	},
 	canMerge: function () {
+		var thisObj = this;
 		try {
 			this.forEachRow(function (row, rowIndex) {
-				if (canMergeArray(row)) throw new Error("can merge row: " + rowIndex);
+				if (thisObj.canMergeArray(row)) throw new Error("can merge row: " + rowIndex);
 			});
 			this.forEachCol(function (col, colIndex) {
-				if (canMergeArray(col)) throw new Error("can merge col: " + colIndex);
+				if (thisObj.canMergeArray(col)) throw new Error("can merge col: " + colIndex);
 			});
 		} catch (ex) {
 			return true;
@@ -99,8 +101,8 @@ Numbers.prototype = {
 		while (next < len) {
 			var currNum = array[curr],
 				nextNum = array[next];
-			if (currNum == 0 || nextNum == 0) return true;
-			if (currNum == nextNum) return true;
+			if (currNum === 0 || nextNum === 0) return true;
+			if (currNum === nextNum) return true;
 			curr = next;
 			next = curr + 1;
 		}
@@ -115,8 +117,8 @@ Numbers.prototype = {
 	// 根据 2048 规则，合并行或列的现有数字
 	mergeArray: function (array, rowOrColIndex, isRow, ltr) {
 		console.log("merge array: ", array.join(), " index: ", rowOrColIndex);
-		var ltr = ltr == null ? true : ltr,
-			len = array.length,
+		ltr = ltr == null ? true : ltr;
+		var len = array.length,
 			curr = ltr ? 0 : len - 1,
 			next = ltr ? curr + 1 : curr - 1;
 
@@ -128,16 +130,16 @@ Numbers.prototype = {
 				nextColIndex = isRow ? next : rowOrColIndex,
 				currNum = this.numbers[currRowIndex][currColIndex],
 				nextNum = this.numbers[nextRowIndex][nextColIndex];
-			if (nextNum == 0) {
+			if (nextNum === 0) {
 				next = ltr ? next + 1 : next - 1;
 				continue;
 			} else {
-				if (currNum == 0) {
+				if (currNum === 0) {
 					this.numbers[currRowIndex][currColIndex] = nextNum;
 					this.numbers[nextRowIndex][nextColIndex] = 0;
 					next = ltr ? curr + 1 : curr - 1;
 					continue;
-				} else if (nextNum == currNum) {
+				} else if (nextNum === currNum) {
 					this.numbers[currRowIndex][currColIndex] = currNum + currNum;
 					this.numbers[nextRowIndex][nextColIndex] = 0;
 				}
