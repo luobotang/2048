@@ -4,7 +4,7 @@ module.exports = function(grunt) {
     pkg: grunt.file.readJSON('package.json'),
     watch: {
       css: {
-        files: "*.less",
+        files: ["*.less"],
         tasks: ['less']
       },
       js: {
@@ -22,8 +22,13 @@ module.exports = function(grunt) {
       all: ['Gruntfile.js', '2048.js']
     },
     less: {
-      options: {
-        compress: true
+      development: {
+        options: {
+          compress: true
+        },
+        files: {
+          "2048.css": "2048.less"
+        }
       }
     }
   });
