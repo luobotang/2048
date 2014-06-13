@@ -1,0 +1,26 @@
+{
+  "name": "2048",
+  "version": "0.1.0",
+  "description": "Game developed by JavaScript",
+  "main": "2048.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/luobotang/2048.git"
+  },
+  "keywords": [
+    "2048",
+    "Game"
+  ],
+  "author": "luobotang",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/luobotang/2048/issues"
+  },
+  "homepage": "https://github.com/luobotang/2048",
+  "devDependencies": {
+    "grunt-contrib-jshint": "~0.6.3"
+  }
+}
