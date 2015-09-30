@@ -2,9 +2,9 @@
   "name": "2048",
   "version": "0.1.0",
   "description": "Game developed by JavaScript",
-  "main": "2048.js",
+  "main": "index.html",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "start index.html"
   },
   "repository": {
     "type": "git",
