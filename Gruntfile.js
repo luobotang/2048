@@ -9,7 +9,7 @@ module.exports = function(grunt) {
       },
       js: {
         files: ['lib/*.js'],
-        tasks: ['uglify']
+        tasks: ['browserify']
       }
     },
     less: {
@@ -18,17 +18,20 @@ module.exports = function(grunt) {
         dest: '2048.css'
       }
     },
-    uglify: {
+    browserify: {
+      options: {
+        alias: { jquery: './lib/jquery.js' }
+      },
       build: {
-        src: ['lib/game.js', 'lib/numbers.js'],
-        dest: "2048.min.js"
+        src: 'lib/app.js',
+        dest: "2048.js"
       }
     }
   })
 
   grunt.loadNpmTasks('grunt-contrib-watch')
   grunt.loadNpmTasks('grunt-contrib-less')
-  grunt.loadNpmTasks('grunt-contrib-uglify')
+  grunt.loadNpmTasks('grunt-browserify')
 
-  grunt.registerTask('default', ['less', 'uglify'])
+  grunt.registerTask('default', ['less', 'browserify'])
 }
