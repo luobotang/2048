@@ -1,5 +1,4 @@
-2048
-====
+# 2048
 
 JavaScript 实现的 2048 网页游戏
 
@@ -7,6 +6,7 @@ JavaScript 实现的 2048 网页游戏
 
 <https://github.com/gabrielecirulli/2048>
 
-示例
+## 示例
 
+<http://luobotang.github.io/2048/>
 ![](2048.png)
