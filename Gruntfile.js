@@ -8,7 +8,7 @@ module.exports = function(grunt) {
         tasks: ['less']
       },
       js: {
-        files: ['js/src/*.js'],
+        files: ['lib/*.js'],
         tasks: ['uglify']
       }
     },
@@ -31,5 +31,4 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-uglify')
 
   grunt.registerTask('default', ['less', 'uglify'])
-  grunt.registerTask('watch', ['watch'])
 }
