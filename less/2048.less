@@ -1,28 +1,28 @@
+* {
+	margin: 0;
+	padding: 0;
+}
+
 header {
-	margin: 50px auto 0;
+	margin: 30px auto;
 	text-align: center;
-}
 
-header a {
-	text-decoration: none;
-	font: 16px Arial;
-	line-height: 20px;
+	button {
+		padding: 5px 10px;
+		text-decoration: none;
+		font: 16px/2 Arial;
+		color: white;
+		background-color: rgb(236, 196, 32);
+		border: 1px solid rgb(236, 196, 32);
+		border-radius: 5px;
+		box-shadow: 0 0 5px #999;
 
-	color: white;
-	background-color: rgb(236, 196, 32);
-
-	height: 20px;
-
-	padding: 5px 10px;
-	border: 1px solid rgb(236, 196, 32);
-	border-radius: 5px;
-	box-shadow: 0 0 5px #999;
-}
-
-header a:hover {
-	border-color: rgb(241, 152, 84);
-	background-color: rgb(241, 152, 84);
-	box-shadow: 0 0 10px #999;
+		&:hover {
+			border-color: rgb(241, 152, 84);
+			background-color: rgb(241, 152, 84);
+			box-shadow: 0 0 10px #999;
+		}
+	}
 }
 
 #board {

@@ -1,20 +1,22 @@
+* {
+  margin: 0;
+  padding: 0;
+}
 header {
-  margin: 50px auto 0;
+  margin: 30px auto;
   text-align: center;
 }
-header a {
+header button {
+  padding: 5px 10px;
   text-decoration: none;
-  font: 16px Arial;
-  line-height: 20px;
+  font: 16px/2 Arial;
   color: white;
   background-color: #ecc420;
-  height: 20px;
-  padding: 5px 10px;
   border: 1px solid #ecc420;
   border-radius: 5px;
   box-shadow: 0 0 5px #999;
 }
-header a:hover {
+header button:hover {
   border-color: #f19854;
   background-color: #f19854;
   box-shadow: 0 0 10px #999;
