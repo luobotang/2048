@@ -3,28 +3,21 @@ module.exports = function(grunt) {
   grunt.initConfig({
     pkg: grunt.file.readJSON('package.json'),
     watch: {
-      css: {
-        files: ["less/*.less"],
-        tasks: ['less']
-      },
-      js: {
-        files: ['lib/*.js'],
-        tasks: ['browserify']
+      build: {
+        files: ["src/*.*"],
+        tasks: ['build']
       }
     },
     less: {
       build: {
-        src: 'less/2048.less',
-        dest: '2048.css'
+        src: 'src/app.less',
+        dest: 'app/app.css'
       }
     },
     browserify: {
-      options: {
-        alias: { jquery: './lib/jquery.js' }
-      },
       build: {
-        src: 'lib/app.js',
-        dest: "2048.js"
+        src: 'src/app.js',
+        dest: "app/app.js"
       }
     }
   })
@@ -33,5 +26,6 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-less')
   grunt.loadNpmTasks('grunt-browserify')
 
-  grunt.registerTask('default', ['less', 'browserify'])
+  grunt.registerTask('build', ['less', 'browserify'])
+  grunt.registerTask('default', ['build'])
 }

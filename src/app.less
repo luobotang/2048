@@ -1,0 +1,136 @@
+* {
+	margin: 0;
+	padding: 0;
+}
+
+header {
+	margin: 30px auto;
+	text-align: center;
+
+	button {
+		padding: 5px 10px;
+		text-decoration: none;
+		font: 16px/2 Arial;
+		color: white;
+		background-color: rgb(236, 196, 32);
+		border: 1px solid rgb(236, 196, 32);
+		border-radius: 5px;
+		box-shadow: 0 0 5px #999;
+
+		&:hover {
+			border-color: rgb(241, 152, 84);
+			background-color: rgb(241, 152, 84);
+			box-shadow: 0 0 10px #999;
+		}
+	}
+}
+
+#board {
+	position: relative;
+	margin: 0 auto;
+	padding: 0;
+
+	width: 500px;
+	height: 500px;
+
+	border-radius: 5px;
+	background-color: #BBADA0;
+}
+
+#board .cell {
+	float: left;
+	margin: 20px 0 0 20px;
+	padding: 0;
+
+	border-radius: 5px;
+
+	width: 100px;
+	height: 100px;
+
+	font-family: Arial;
+	font-size: 70px;
+	
+	font-weight: bold;
+	line-height: 98px;
+	text-align: center;
+
+	/* 样式过渡效果 */
+	transition: all 0.2s;
+}
+
+/* 样式参考：http://gabrielecirulli.github.io/2048/style/main.css */
+#board {
+	[num="no"] {
+		background-color: rgba(238, 228, 218, 0.35);
+	}
+	[num="2"] {
+		color: #888;
+		background-color: #eee4da;
+	}
+	[num="4"] {
+		color: #888;
+		background-color: #ede0c8;
+	}
+	[num="8"] {
+		color: #f9f6f2;
+		background-color: #f2b179;
+	}
+	[num="16"] {
+		color: #f9f6f2;
+		background-color: #f59563;
+	}
+	[num="32"] {
+		color: #f9f6f2;
+		background-color: #f67c5f;
+	}
+	[num="64"] {
+		color: #f9f6f2;
+		background-color: #f65e3b;
+	}
+	[num="128"] {
+		font-size: 50px;
+		color: #f9f6f2;
+		background-color: #edcf72;
+	}
+	[num="256"] {
+		font-size: 50px;
+		color: #f9f6f2;
+		background-color: #edcc61;
+	}
+	[num="512"] {
+		font-size: 50px;
+		color: #f9f6f2;
+		background-color: #edc850;
+	}
+	[num="1024"] {
+		font-size: 40px;
+		color: #f9f6f2;
+		background-color: #edc53f;
+	}
+	[num="2048"] {
+		font-size: 40px;
+		color: #f9f6f2;
+		background-color: #edc22e;
+	}
+	[num="super"] {
+		font-size: 40px;
+		color: #f9f6f2;
+		background-color: #3c3a32;
+	}
+}
+
+#message {
+	line-height: 30px;
+	height: 30px;
+	text-align: center;
+
+	margin: 1em auto;
+	padding: 0;
+
+	font: 20px Arial;
+	font-weight: bold;
+	color: red;
+	opacity: 0.5;
+
+	display: none;
+}

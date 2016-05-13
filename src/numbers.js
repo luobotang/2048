@@ -48,11 +48,6 @@ Numbers.prototype = {
 			col >= 0 && row < this.colCount) {
 			this.numbers[row][col] = n
 		}
-		return {
-			row: row,
-			col: col,
-			num: n
-		}
 	},
 	hasZero: function () {
 		try {
@@ -65,32 +60,24 @@ Numbers.prototype = {
 		return false;
 	},
 	moveLeft: function () {
-		var thisObj = this;
-		this.forEachRow(function (row, rowIndex) {
-			thisObj.mergeRow(row, rowIndex);
-		});
-		console.log("Move Left");
+		for (var i = 0, len = this.rowCount; i < len; i++) {
+			this.mergeRow(i, 'asc');
+		}
 	},
 	moveUp: function () {
-		var thisObj = this;
-		this.forEachCol(function (col, colIndex) {
-			thisObj.mergeCol(col, colIndex);
-		});
-		console.log("Move Up");
+		for (var i = 0, len = this.colCount; i < len; i++) {
+			this.mergeCol(i, 'asc');
+		}
 	},
 	moveRight: function () {
-		var thisObj = this;
-		this.forEachRow(function (row, rowIndex) {
-			thisObj.mergeRow(row, rowIndex, false);
-		});
-		console.log("Move Right");
+		for (var i = 0, len = this.rowCount; i < len; i++) {
+			this.mergeRow(i, 'desc');
+		}
 	},
 	moveDown: function () {
-		var thisObj = this;
-		this.forEachCol(function (col, colIndex) {
-			thisObj.mergeCol(col, colIndex, false);
-		});
-		console.log("Move Down");
+		for (var i = 0, len = this.colCount; i < len; i++) {
+			this.mergeCol(i, 'desc');
+		}
 	},
 	canMerge: function () {
 		var thisObj = this;
@@ -120,49 +107,108 @@ Numbers.prototype = {
 		}
 		return false;
 	},
-	mergeRow: function (row, rowIndex, ltr) {
-		this.mergeArray(row, rowIndex, true, ltr);
+
+	// TODO 简化逻辑，避免使用 forEachRow 方法
+	canMergeRow: function (row) {
+		var col1 = 0
+		var col2 = col1 + 1
+		
 	},
-	mergeCol: function (col, colIndex, ltr) {
-		this.mergeArray(col, colIndex, false, ltr);
+
+	// TODO
+	canMergeCol: function (col) {
+		
 	},
 
-	// 根据 2048 规则，合并行或列的现有数字
-	mergeArray: function (array, rowOrColIndex, isRow, ltr) {
-		console.log("merge array: ", array.join(), " index: ", rowOrColIndex)
+	/*
+	 * @param {'asc'|'desc'} order - 'asc' 从小往大; 'desc' 从大往小
+	 */
+	mergeRow: function (row, order) {
+		var colX = this.colCount
+		var col1
+		var col2
+		var cell
 
-		ltr = ltr == null ? true : ltr
+		if (order === 'asc') {
+			col1 = 0;
+			col2 = col1 + 1;
 
-		var len = array.length
-		var curr = ltr ? 0 : len - 1
-		var next = ltr ? curr + 1 : curr - 1
-
-		// !BUG 仔细检查代码逻辑，确保没有无限循环问题
-		while (ltr ? next < len : next >= 0) {
-			var currRowIndex = isRow ? rowOrColIndex : curr
-			var currColIndex = isRow ? curr : rowOrColIndex
-			var nextRowIndex = isRow ? rowOrColIndex : next
-			var nextColIndex = isRow ? next : rowOrColIndex
-			var currNum = this.numbers[currRowIndex][currColIndex]
-			var nextNum = this.numbers[nextRowIndex][nextColIndex]
-
-			if (nextNum === 0) {
-				next = ltr ? next + 1 : next - 1
-				continue
+			while (col2 < colX) {
+				cell = this.mergeCell(row, col1, row, col2);
+				col1 = cell ? cell[1] : col2;
+				col2 = col2 + 1;
 			}
+		} else {
+			col1 = colX - 1;
+			col2 = col1 - 1;
 
-			if (currNum === 0) {
-				this.numbers[currRowIndex][currColIndex] = nextNum
-				this.numbers[nextRowIndex][nextColIndex] = 0
-				next = ltr ? curr + 1 : curr - 1
-				continue
-			} else if (nextNum === currNum) {
-				this.numbers[currRowIndex][currColIndex] = currNum + currNum
-				this.numbers[nextRowIndex][nextColIndex] = 0
+			while (col2 >= 0) {
+				cell = this.mergeCell(row, col1, row, col2);
+				col1 = cell ? cell[1] : col2;
+				col2 = col2 - 1;
 			}
+		}
+	},
+	mergeCol: function (col, order) {
+		var rowX = this.rowCount
+		var row1
+		var row2
+		var cell
 
-			curr = ltr ? curr + 1 : curr - 1
-			next = ltr ? curr + 1 : curr - 1
+		if (order === 'asc') {
+			row1 = 0;
+			row2 = row1 + 1;
+
+			while (row2 < rowX) {
+				cell = this.mergeCell(row1, col, row2, col);
+				row1 = cell ? cell[0] : row2;
+				row2 = row2 + 1;
+			}
+		} else {
+			row1 = rowX - 1;
+			row2 = row1 - 1;
+
+			while (row2 >= 0) {
+				cell = this.mergeCell(row1, col, row2, col);
+				row1 = cell ? cell[0] : row2;
+				row2 = row2 - 1;
+			}
+		}
+	},
+
+	/*
+	 * cell_2 => cell_1
+	 * 将 cell2(row2, col2) 的值合并到 cell1(row1, col1)
+	 * 返回在经过操作后值为 0 可以用作后续 cell 合并目标的 cell 坐标
+	 * @return {[{number} row, {number} col] | null}
+	 */
+	mergeCell: function (row1, col1, row2, col2) {
+		var num1 = this.numbers[row1][col1]
+		var num2 = this.numbers[row2][col2]
+		// TODO BUG
+		// 考虑两个要合并的 cell 间有空 cell 的情况！
+		if (num1 == 0) {
+			if (num2 === 0) {
+				return [row1, col1]
+			} else {
+				// move
+				this.numbers[row1][col1] = num2
+				this.numbers[row2][col2] = 0
+				return [row1, col1]
+			}
+		} else {
+			if (num2 === 0) {
+				return [row1, col1]
+			} else {
+				if (num1 === num2) {
+					// merge
+					this.numbers[row1][col1] = num1 + num2
+					this.numbers[row2][col2] = 0
+					return [row2, col2]
+				} else {
+					return [row2, col2]
+				}
+			}
 		}
 	}
 }

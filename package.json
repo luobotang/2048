@@ -2,9 +2,9 @@
   "name": "2048",
   "version": "0.1.0",
   "description": "Game developed by JavaScript",
-  "main": "index.html",
+  "main": "app/index.html",
   "scripts": {
-    "test": "start index.html"
+    "test": "start app/index.html"
   },
   "repository": {
     "type": "git",
