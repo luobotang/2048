@@ -179,3 +179,30 @@ describe('Numbers#moveXXX()', function () {
 		assert(numbers.get(3, 0) === 4)
 	})
 })
+
+describe('Numbers#canMerge()', function () {
+
+	it('should return correct', function () {
+		var numbers = new Numbers()
+		numbers.set(0, 0, 2)
+		numbers.set(0, 1, 4)
+		numbers.set(0, 2, 2)
+		numbers.set(0, 3, 4)
+		numbers.set(1, 0, 4)
+		numbers.set(1, 1, 2)
+		numbers.set(1, 2, 4)
+		numbers.set(1, 3, 2)
+		numbers.set(2, 0, 2)
+		numbers.set(2, 1, 4)
+		numbers.set(2, 2, 2)
+		numbers.set(2, 3, 4)
+		numbers.set(3, 0, 4)
+		numbers.set(3, 1, 2)
+		numbers.set(3, 2, 4)
+		numbers.set(3, 3, 2)
+		assert(numbers.canMerge() === false)
+
+		numbers.set(3, 3, 4)
+		assert(numbers.canMerge() === true)
+	})
+})

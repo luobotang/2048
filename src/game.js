@@ -3,10 +3,11 @@ var Numbers = require('./numbers')
 var Keys = require('keys')
 var MessageBox = require('./message-box')
 
-var MOVE_ANIMATION_TIME = 500 // ms
+var MOVE_ANIMATION_TIME = 200 // ms
 
 function Game(el) {
 	this.$el = $(el || '.game-2048')
+	this.$board = this.$el.find('.board')
 	this.msgBox = new MessageBox()
 
 	this.$el.on('click', '.new-round', $.proxy(function () {
@@ -29,6 +30,7 @@ $.extend(Game.prototype, {
 		this.running = true;
 	},
 
+	// TODO bug 不能正确检测游戏结束情况
 	isGameOver: function () {
 		// 检查无法继续合并的情况
 		if (!this.numbers.canMerge()) {
@@ -101,20 +103,19 @@ $.extend(Game.prototype, {
 		var from = step.from
 		var to = step.to
 		var $cellFrom = this.getCell(from[0], from[1])
-		var $cellFromClone = $cellFrom.clone().attr('id', '').css('z-index', '1').appendTo(this.$el)
+		var $cellFromClone = $cellFrom.clone().css('z-index', '1')
 		var $cellTo = this.getCell(to[0], to[1])
 
 		$cellFrom.text('').attr('num', 'no')
 
-		setTimeout(function () {
-			$cellFromClone.attr('data-row', to[0]).attr('data-col', to[1])
-		})
+		this.$board.append($cellFromClone)
+		$cellFromClone.attr('data-row', to[0]).attr('data-col', to[1])
 
 		setTimeout(function () {
 			var result = step.result
 			$cellTo.text(result).attr('num', result > 2048 ? 'super' : result)
 			$cellFromClone.remove()
-		})
+		}, MOVE_ANIMATION_TIME)
 	},
 
 	showNumber: function (row, col, num) {
@@ -132,7 +133,7 @@ $.extend(Game.prototype, {
 
 	getRandomFreeCell: function () {
 		// 空闲位置 num 属性为 no
-		var cells = this.$el.find('[num="no"]')
+		var cells = this.$board.find('[num="no"]')
 		var count = cells.length
 		var rand = Math.floor(Math.random() * count)
 		return cells.eq(rand)
@@ -151,7 +152,7 @@ $.extend(Game.prototype, {
 	},
 
 	getCell: function (row, col) {
-		return this.$el.find('.cell-' + row + '-' + col)
+		return this.$board.find('.cell-' + row + '-' + col)
 	}
 })
 

@@ -53,8 +53,7 @@
   line-height: 98px;
   text-align: center;
   border-radius: 5px;
-  /* 样式过渡效果 */
-  transition: left 0.5s, top 0.5s, background-color 0.2s, color 0.2s;
+  transition: all 0.2s;
 }
 .game-2048 .board .cell[data-row="0"] {
   top: 20px;
