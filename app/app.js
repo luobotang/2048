@@ -3,143 +3,215 @@ var $ = require('jquery')
 var Game = require('./game')
 
 $(function () {
-	Game.init('#board')
-	$('#btn-new-round').on('click', function () {
-		Game.newRound()
-	})
-	$('#message').on('click', function () {
-		this.hide()
-	})
+	var game = new Game()
 })
-},{"./game":2,"jquery":3}],2:[function(require,module,exports){
+},{"./game":2,"jquery":4}],2:[function(require,module,exports){
 var $ = require('jquery')
 var Numbers = require('./numbers')
 var Keys = require('keys')
+var MessageBox = require('./message-box')
 
-var numbers
-var running = false
-var $el
+var MOVE_ANIMATION_TIME = 500 // ms
 
-function init(el) {
-	$el = $(el || '#board')
-	$(document).on("keydown", onKeydown)
+function Game(el) {
+	this.$el = $(el || '.game-2048')
+	this.msgBox = new MessageBox()
+
+	this.$el.on('click', '.new-round', $.proxy(function () {
+		this.newRound()
+	}, this))
+
+	$(document).on('keydown', $.proxy(this.onKeydown, this))
 }
 
-function newRound() {
-	numbers = new Numbers()
-	$("#message").hide()
+$.extend(Game.prototype, {
 
-	// 更新界面，生成两个随机数
-	// TODO: 将添加随机数的方法移到 Numbers 中，不再依赖界面显示情况，
-	//       否则需要每次都更新界面。
-	updateUI()
-	addRandomNumber()
-	addRandomNumber()
+	newRound: function () {
+		this.numbers = new Numbers();
+		this.msgBox.hide();
 
-	running = true;
-}
+		this.renderNumbers();
+		this.addRandomNumber();
+		this.addRandomNumber();
 
-// 检查并处理无法继续游戏的情况，若无法继续则结束当前一局游戏
-function isGameOver() {
-	// 检查无法继续合并的情况
-	if (!numbers.canMerge()) {
-		running = false;
-		$("#message").text("Game Over!").show();
-	}
-	numbers.forEach(function (n) {
-		if (n === 2048) {
-			running = false;
-			$("#message").text("Success! You got 2048!").show();
+		this.running = true;
+	},
+
+	isGameOver: function () {
+		// 检查无法继续合并的情况
+		if (!this.numbers.canMerge()) {
+			this.running = false;
+			this.msgBox.show("Game Over!");
 		}
+
+		this.numbers.forEach($.proxy(function (n) {
+			if (n === 2048) {
+				this.running = false;
+				this.msgBox.show("Success! You got 2048!");
+			}
+		}, this))
+
+		return !this.running
+	},
+
+	onKeydown: function (e) {
+		var key = e.which
+		if (!this.running || key < Keys.Left || key > Keys.Down) {
+			return;
+		}
+
+		e.preventDefault();
+
+		if (this.actionTimer) {
+			return
+		}
+
+		var move
+
+		switch (key) {
+			case Keys.Left:  move = this.numbers.moveLeft();  break;
+			case Keys.Up:    move = this.numbers.moveUp();    break;
+			case Keys.Right: move = this.numbers.moveRight(); break;
+			case Keys.Down:  move = this.numbers.moveDown();  break;
+		}
+
+		// 没有产生任何变化时不做处理
+		if (move && move.length > 0) {
+			this.showMove(move)
+
+			// 等待动画完成
+			this.actionTimer = setTimeout($.proxy(function () {
+				this.actionTimer = null
+				if (!this.isGameOver()) {
+					this.addRandomNumber()
+					this.isGameOver()
+				}
+			}, this), MOVE_ANIMATION_TIME);
+		}
+	},
+
+	renderNumbers: function () {
+		this.numbers.forEach($.proxy(function (num, row, col) {
+			this.showNumber(row, col, num)
+		}, this));
+	},
+
+	/*
+	 * @param {Step[]} move - 由一系列的步骤组成的单次移动过程
+	 */
+	showMove: function (move) {
+		for (var i = 0, len = move.length; i < len; i++) {
+			this.showMoveStep(move[i]);
+		}
+	},
+
+	showMoveStep: function (step) {
+		var from = step.from
+		var to = step.to
+		var $cellFrom = this.getCell(from[0], from[1])
+		var $cellFromClone = $cellFrom.clone().attr('id', '').css('z-index', '1').appendTo(this.$el)
+		var $cellTo = this.getCell(to[0], to[1])
+
+		$cellFrom.text('').attr('num', 'no')
+
+		setTimeout(function () {
+			$cellFromClone.attr('data-row', to[0]).attr('data-col', to[1])
+		})
+
+		setTimeout(function () {
+			var result = step.result
+			$cellTo.text(result).attr('num', result > 2048 ? 'super' : result)
+			$cellFromClone.remove()
+		})
+	},
+
+	showNumber: function (row, col, num) {
+		this.getCell(row, col)
+			.text(num === 0 ? "" : num)
+			.attr('num', num === 0 ? "no" : num > 2048 ? "super" : num)
+	},
+
+	addRandomNumber: function () {
+		var pos = this.getCellPosition(this.getRandomFreeCell())
+		var num = this.getRandomNumber()
+		this.numbers.set(pos.row, pos.col, num)
+		this.showNumber(pos.row, pos.col, num)
+	},
+
+	getRandomFreeCell: function () {
+		// 空闲位置 num 属性为 no
+		var cells = this.$el.find('[num="no"]')
+		var count = cells.length
+		var rand = Math.floor(Math.random() * count)
+		return cells.eq(rand)
+	},
+
+	getCellPosition: function ($cell) {
+		return {
+			row: parseInt($cell.attr("data-row"), 10),
+			col: parseInt($cell.attr("data-col"), 10)
+		};
+	},
+
+	// 随机数为 2 或 4
+	getRandomNumber: function () {
+		return Math.random() > 0.5 ? 2 : 4;
+	},
+
+	getCell: function (row, col) {
+		return this.$el.find('.cell-' + row + '-' + col)
+	}
+})
+
+module.exports = Game
+},{"./message-box":3,"./numbers":6,"jquery":4,"keys":5}],3:[function(require,module,exports){
+var $ = require('jquery')
+
+function MessageBox(el) {
+	this.$el = $(el || '.message-box')
+	var self = this
+	this.$el.on('click', function () {
+		self.hide()
 	})
-	return !running
 }
 
-function onKeydown(e) {
-	var key = e.which
-	if (!running || key < Keys.Left || key > Keys.Down) {
-		return;
+$.extend(MessageBox.prototype, {
+
+	show: function (message) {
+		this.$el.text(message).show()
+	},
+
+	hide: function () {
+		this.$el.hide()
 	}
 
-	e.preventDefault();
+})
 
-	switch (key) {
-		case Keys.Left:  numbers.moveLeft();  break;
-		case Keys.Up:    numbers.moveUp();    break;
-		case Keys.Right: numbers.moveRight(); break;
-		case Keys.Down:  numbers.moveDown();  break;
-	}
-
-	updateUI()
-	if (!isGameOver()) {
-		addRandomNumber()
-		isGameOver()
-	}
-}
-
-function updateUI() {
-	numbers.forEach(function (num, row, col) {
-		showNumber(row, col, num)
-	});
-}
-
-function showNumber(row, col, num) {
-	$('#cell-' + row + '-' + col)
-		.text(num === 0 ? "" : num)
-		.attr('num', num === 0 ? "no" : num > 2048 ? "super" : num)
-}
-
-function addRandomNumber() {
-	var pos = getCellPosition(getRandomFreeCell())
-	var num = getRandomNumber()
-	console.log("Add random number at [" + pos.row + ', ' + pos.col + ']: ' + num)
-	numbers.set(pos.row, pos.col, num)
-	showNumber(pos.row, pos.col, num)
-}
-
-function getRandomFreeCell() {
-	// 空闲位置 num 属性为 no
-	var cells = $el.find('[num="no"]')
-	var count = cells.length
-	var rand = Math.floor(Math.random() * count)
-	return cells[rand]
-}
-
-function getCellPosition(cell) {
-	var $cell = $(cell)
-	return {
-		row: parseInt($cell.attr("data-row"), 10),
-		col: parseInt($cell.attr("data-col"), 10)
-	};
-}
-
-// 随机数为 2 或 4
-function getRandomNumber() {
-	return Math.random() > 0.5 ? 2 : 4;
-}
-
-module.exports = {
-	init: init,
-	newRound: newRound
-};
-},{"./numbers":5,"jquery":3,"keys":4}],3:[function(require,module,exports){
+module.exports = MessageBox
+},{"jquery":4}],4:[function(require,module,exports){
 module.exports = window.jQuery
-},{}],4:[function(require,module,exports){
+},{}],5:[function(require,module,exports){
 module.exports =  {
 	Left: 37,
 	Up: 38,
 	Right: 39,
 	Down: 40
 }
-},{}],5:[function(require,module,exports){
+},{}],6:[function(require,module,exports){
+var ROW_COUNT = 4
+var COL_COUNT = 4
+
 function Numbers() {
 	this.numbers = [[0,0,0,0], [0,0,0,0], [0,0,0,0], [0,0,0,0]]
-	this.rowCount = 4
-	this.colCount = 4
+	// 历次移动的过程记录
+	// TODO 利用记录的移动过程数据实现“撤销”、“重做”
+	this.moves = []
+	this.rowCount = ROW_COUNT
+	this.colCount = COL_COUNT
 }
 
 Numbers.prototype = {
-	// callback(number, rowIndex, colIndex)
+
 	forEach: function (callback) {
 		if (typeof callback !== 'function') return
 		this.numbers.forEach(function (row, rowIndex) {
@@ -148,110 +220,81 @@ Numbers.prototype = {
 			})
 		})
 	},
-	forEachRow: function (callback) {
-		if (typeof callback !== 'function') return
-		this.numbers.forEach(function (row, rowIndex) {
-			callback(row, rowIndex)
-		})
-	},
-	// callback(col : array, colIndex : int)
-	forEachCol: function (callback) {
-		if (typeof callback !== 'function') return
 
-		for (var colIndex = 0; colIndex < this.colCount; colIndex++) {
-			var col = []
-			for (var rowIndex = 0; rowIndex < this.rowCount; rowIndex++) {
-				col.push(this.numbers[rowIndex][colIndex])
-			}
-			callback(col, colIndex)
-		}
+	get: function (row, col) {
+		var row = this.numbers[row]
+		return row ? row[col] : null
 	},
-	get: function (rowIndex, colIndex) {
-		var row = this.numbers[rowIndex]
-		return row ? row[colIndex] : null
-	},
-	/*
-	 * 设置指定位置的数值，返回设置数值的相关信息
-	 * @param {number} row
-	 * @param {number} col
-	 * @param {number} n
-	 * @returns {object} {row {number}, col {number}, n {number}}
-	 */
 	set: function (row, col, n) {
 		if (row >= 0 && row < this.rowCount &&
 			col >= 0 && row < this.colCount) {
 			this.numbers[row][col] = n
 		}
 	},
-	hasZero: function () {
-		try {
-			this.forEach(function (n) {
-				if (n === 0) throw new Error("found");
-			})
-		} catch (ex) {
-			return true;
-		}
-		return false;
-	},
+
 	moveLeft: function () {
-		for (var i = 0, len = this.rowCount; i < len; i++) {
-			this.mergeRow(i, 'asc');
-		}
+		return this.mergeRows('asc');
 	},
 	moveUp: function () {
-		for (var i = 0, len = this.colCount; i < len; i++) {
-			this.mergeCol(i, 'asc');
-		}
+		return this.mergeCols('asc');
 	},
 	moveRight: function () {
-		for (var i = 0, len = this.rowCount; i < len; i++) {
-			this.mergeRow(i, 'desc');
-		}
+		return this.mergeRows('desc');
 	},
 	moveDown: function () {
+		return this.mergeCols('desc');
+	},
+
+	mergeRows: function (order) {
+		var move = this.currentMove = []
+
+		for (var i = 0, len = this.rowCount; i < len; i++) {
+			this.mergeRow(i, order);
+		}
+
+		if (move.length > 0) { this.moves.push(move) }
+		this.currentMove = null
+		return move
+	},
+	mergeCols: function (order) {
+		var move = this.currentMove = []
+
 		for (var i = 0, len = this.colCount; i < len; i++) {
-			this.mergeCol(i, 'desc');
+			this.mergeCol(i, order);
 		}
+
+		if (move.length > 0) { this.moves.push(move) }
+		this.currentMove = null
+		return move
 	},
+
+	/*
+	 * 任意 cell 值为 0，或与相邻 cell 值相等即可以合并
+	 */
 	canMerge: function () {
-		var thisObj = this;
-		try {
-			this.forEachRow(function (row, rowIndex) {
-				if (thisObj.canMergeArray(row)) throw new Error("can merge row: " + rowIndex);
-			});
-			this.forEachCol(function (col, colIndex) {
-				if (thisObj.canMergeArray(col)) throw new Error("can merge col: " + colIndex);
-			});
-		} catch (ex) {
-			return true;
+		var numbers = this.numbers
+		var num
+		var rowCount = this.rowCount
+		var colCount = this.colCount
+		for (var row = 0, len = rowCount; row < len; row++) {
+			for (var col = 0; col < colCount; col++) {
+				num = numbers[row][col]
+				if (num === 0) {
+					return true
+				}
+				if (row > 0) {
+					if (num === numbers[row - 1][col]) {
+						return true
+					}
+				}
+				if (col > 0) {
+					if (num === numbers[row][col - 1]) {
+						return true
+					}
+				}
+			}
 		}
-		return false;
-	},
-	canMergeArray: function (array) {
-		var len = array.length,
-			curr = 0,
-			next = curr + 1;
-		while (next < len) {
-			var currNum = array[curr],
-				nextNum = array[next];
-			if (currNum === 0 || nextNum === 0) return true;
-			if (currNum === nextNum) return true;
-			curr = next;
-			next = curr + 1;
-		}
-		return false;
-	},
-
-	// TODO 简化逻辑，避免使用 forEachRow 方法
-	canMergeRow: function (row) {
-		var col1 = 0
-		var col2 = col1 + 1
-		
-	},
-
-	// TODO
-	canMergeCol: function (col) {
-		
+		return false
 	},
 
 	/*
@@ -269,7 +312,7 @@ Numbers.prototype = {
 
 			while (col2 < colX) {
 				cell = this.mergeCell(row, col1, row, col2);
-				col1 = cell ? cell[1] : col2;
+				col1 = cell[1];
 				col2 = col2 + 1;
 			}
 		} else {
@@ -278,7 +321,7 @@ Numbers.prototype = {
 
 			while (col2 >= 0) {
 				cell = this.mergeCell(row, col1, row, col2);
-				col1 = cell ? cell[1] : col2;
+				col1 = cell[1];
 				col2 = col2 - 1;
 			}
 		}
@@ -295,7 +338,7 @@ Numbers.prototype = {
 
 			while (row2 < rowX) {
 				cell = this.mergeCell(row1, col, row2, col);
-				row1 = cell ? cell[0] : row2;
+				row1 = cell[0];
 				row2 = row2 + 1;
 			}
 		} else {
@@ -304,7 +347,7 @@ Numbers.prototype = {
 
 			while (row2 >= 0) {
 				cell = this.mergeCell(row1, col, row2, col);
-				row1 = cell ? cell[0] : row2;
+				row1 = cell[0];
 				row2 = row2 - 1;
 			}
 		}
@@ -312,22 +355,24 @@ Numbers.prototype = {
 
 	/*
 	 * cell_2 => cell_1
-	 * 将 cell2(row2, col2) 的值合并到 cell1(row1, col1)
+	 * 将 cell_2(row2, col2) 的值合并到 cell_1(row1, col1)
 	 * 返回在经过操作后值为 0 可以用作后续 cell 合并目标的 cell 坐标
 	 * @return {[{number} row, {number} col] | null}
 	 */
 	mergeCell: function (row1, col1, row2, col2) {
 		var num1 = this.numbers[row1][col1]
 		var num2 = this.numbers[row2][col2]
-		// TODO BUG
-		// 考虑两个要合并的 cell 间有空 cell 的情况！
+
 		if (num1 == 0) {
 			if (num2 === 0) {
 				return [row1, col1]
 			} else {
 				// move
-				this.numbers[row1][col1] = num2
-				this.numbers[row2][col2] = 0
+				this.moveCell({
+					from: [row2, col2, num2],
+					to: [row1, col1, 0],
+					result: num2
+				})
 				return [row1, col1]
 			}
 		} else {
@@ -336,14 +381,84 @@ Numbers.prototype = {
 			} else {
 				if (num1 === num2) {
 					// merge
-					this.numbers[row1][col1] = num1 + num2
-					this.numbers[row2][col2] = 0
-					return [row2, col2]
+					this.moveCell({
+						from: [row2, col2, num2],
+						to: [row1, col1, num1],
+						result: num1 + num2
+					})
+					// 检测是否相邻，不相邻时返回中间的空 cell
+					var distance = row2 - row1 + col2 - col1
+					if (distance > 1) {
+						if (row1 === row2) {
+							return [row1, col1 + 1]
+						} else {
+							return [row1 + 1, col1]
+						}
+					} else if (distance < -1) {
+						if (row1 === row2) {
+							return [row1, col1 - 1]
+						} else {
+							return [row1 - 1, col1]
+						}
+					} else {
+						return [row2, col2]
+					}
 				} else {
-					return [row2, col2]
+					// 检测两个 cell 是否紧邻，不相邻时移动 cell2
+					var distance = row2 - row1 + col2 - col1
+					if (distance > 1) {
+						// move
+						if (row1 === row2) {
+							// same row
+							this.moveCell({
+								from: [row2, col2, num2],
+								to: [row1, col1 + 1, 0],
+								result: num2
+							})
+							return [row1, col1 + 1]
+						} else {
+							// same col
+							this.moveCell({
+								from: [row2, col2, num2],
+								to: [row1 + 1, col1, 0],
+								result: num2
+							})
+							return [row1 + 1, col1]
+						}
+					} else if (distance < -1) {
+						// move
+						if (row1 === row2) {
+							this.moveCell({
+								from: [row2, col2, num2],
+								to: [row1, col1 - 1, 0],
+								result: num2
+							})
+							return [row1, col1 - 1]
+						} else {
+							this.moveCell({
+								from: [row2, col2, num2],
+								to: [row1 - 1, col1, 0],
+								result: num2
+							})
+							return [row1 - 1, col1]
+						}
+					} else {
+						return [row2, col2]
+					}
 				}
 			}
 		}
+	},
+
+	/*
+	 * @param {Step} step - {from: [row2, col2, num2], to: [row1, col1, num1]}
+	 */
+	moveCell: function (step) {
+		var from = step.from
+		var to = step.to
+		this.currentMove.push(step)
+		this.numbers[ from[0] ][ from[1] ] = 0
+		this.numbers[ to[0] ][ to[1] ] = step.result
 	}
 }
 

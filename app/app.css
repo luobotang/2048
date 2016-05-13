@@ -2,11 +2,11 @@
   margin: 0;
   padding: 0;
 }
-header {
+.game-2048 header {
   margin: 30px auto;
   text-align: center;
 }
-header button {
+.game-2048 header button {
   padding: 5px 10px;
   text-decoration: none;
   font: 16px/2 Arial;
@@ -16,94 +16,12 @@ header button {
   border-radius: 5px;
   box-shadow: 0 0 5px #999;
 }
-header button:hover {
+.game-2048 header button:hover {
   border-color: #f19854;
   background-color: #f19854;
   box-shadow: 0 0 10px #999;
 }
-#board {
-  position: relative;
-  margin: 0 auto;
-  padding: 0;
-  width: 500px;
-  height: 500px;
-  border-radius: 5px;
-  background-color: #BBADA0;
-}
-#board .cell {
-  float: left;
-  margin: 20px 0 0 20px;
-  padding: 0;
-  border-radius: 5px;
-  width: 100px;
-  height: 100px;
-  font-family: Arial;
-  font-size: 70px;
-  font-weight: bold;
-  line-height: 98px;
-  text-align: center;
-  /* 样式过渡效果 */
-  transition: all 0.2s;
-}
-/* 样式参考：http://gabrielecirulli.github.io/2048/style/main.css */
-#board [num="no"] {
-  background-color: rgba(238, 228, 218, 0.35);
-}
-#board [num="2"] {
-  color: #888;
-  background-color: #eee4da;
-}
-#board [num="4"] {
-  color: #888;
-  background-color: #ede0c8;
-}
-#board [num="8"] {
-  color: #f9f6f2;
-  background-color: #f2b179;
-}
-#board [num="16"] {
-  color: #f9f6f2;
-  background-color: #f59563;
-}
-#board [num="32"] {
-  color: #f9f6f2;
-  background-color: #f67c5f;
-}
-#board [num="64"] {
-  color: #f9f6f2;
-  background-color: #f65e3b;
-}
-#board [num="128"] {
-  font-size: 50px;
-  color: #f9f6f2;
-  background-color: #edcf72;
-}
-#board [num="256"] {
-  font-size: 50px;
-  color: #f9f6f2;
-  background-color: #edcc61;
-}
-#board [num="512"] {
-  font-size: 50px;
-  color: #f9f6f2;
-  background-color: #edc850;
-}
-#board [num="1024"] {
-  font-size: 40px;
-  color: #f9f6f2;
-  background-color: #edc53f;
-}
-#board [num="2048"] {
-  font-size: 40px;
-  color: #f9f6f2;
-  background-color: #edc22e;
-}
-#board [num="super"] {
-  font-size: 40px;
-  color: #f9f6f2;
-  background-color: #3c3a32;
-}
-#message {
+.game-2048 header .message-box {
   line-height: 30px;
   height: 30px;
   text-align: center;
@@ -114,4 +32,108 @@ header button:hover {
   color: red;
   opacity: 0.5;
   display: none;
+}
+.game-2048 .board {
+  position: relative;
+  margin: 0 auto;
+  padding: 0;
+  width: 500px;
+  height: 500px;
+  border-radius: 5px;
+  background-color: #BBADA0;
+  /* 样式参考：http://gabrielecirulli.github.io/2048/style/main.css */
+}
+.game-2048 .board .cell {
+  position: absolute;
+  width: 100px;
+  height: 100px;
+  font-family: Arial;
+  font-size: 70px;
+  font-weight: bold;
+  line-height: 98px;
+  text-align: center;
+  border-radius: 5px;
+  /* 样式过渡效果 */
+  transition: left 0.5s, top 0.5s, background-color 0.2s, color 0.2s;
+}
+.game-2048 .board .cell[data-row="0"] {
+  top: 20px;
+}
+.game-2048 .board .cell[data-row="1"] {
+  top: 140px;
+}
+.game-2048 .board .cell[data-row="2"] {
+  top: 260px;
+}
+.game-2048 .board .cell[data-row="3"] {
+  top: 380px;
+}
+.game-2048 .board .cell[data-col="0"] {
+  left: 20px;
+}
+.game-2048 .board .cell[data-col="1"] {
+  left: 140px;
+}
+.game-2048 .board .cell[data-col="2"] {
+  left: 260px;
+}
+.game-2048 .board .cell[data-col="3"] {
+  left: 380px;
+}
+.game-2048 .board [num="no"] {
+  background-color: rgba(238, 228, 218, 0.35);
+}
+.game-2048 .board [num="2"] {
+  color: #888;
+  background-color: #eee4da;
+}
+.game-2048 .board [num="4"] {
+  color: #888;
+  background-color: #ede0c8;
+}
+.game-2048 .board [num="8"] {
+  color: #f9f6f2;
+  background-color: #f2b179;
+}
+.game-2048 .board [num="16"] {
+  color: #f9f6f2;
+  background-color: #f59563;
+}
+.game-2048 .board [num="32"] {
+  color: #f9f6f2;
+  background-color: #f67c5f;
+}
+.game-2048 .board [num="64"] {
+  color: #f9f6f2;
+  background-color: #f65e3b;
+}
+.game-2048 .board [num="128"] {
+  font-size: 50px;
+  color: #f9f6f2;
+  background-color: #edcf72;
+}
+.game-2048 .board [num="256"] {
+  font-size: 50px;
+  color: #f9f6f2;
+  background-color: #edcc61;
+}
+.game-2048 .board [num="512"] {
+  font-size: 50px;
+  color: #f9f6f2;
+  background-color: #edc850;
+}
+.game-2048 .board [num="1024"] {
+  font-size: 40px;
+  color: #f9f6f2;
+  background-color: #edc53f;
+}
+.game-2048 .board [num="2048"] {
+  font-size: 40px;
+  color: #f9f6f2;
+  background-color: #edc22e;
+}
+.game-2048 .board [num="super"] {
+  font-size: 40px;
+  color: #f9f6f2;
+  background-color: #3c3a32;
 }
