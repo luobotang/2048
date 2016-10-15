@@ -128,32 +128,32 @@
   background-color: #f65e3b;
 }
 .game-2048-board [num="128"] i {
-  font-size: 34.5px;
+  font-size: 46px;
   color: #f9f6f2;
   background-color: #edcf72;
 }
 .game-2048-board [num="256"] i {
-  font-size: 34.5px;
+  font-size: 46px;
   color: #f9f6f2;
   background-color: #edcc61;
 }
 .game-2048-board [num="512"] i {
-  font-size: 34.5px;
+  font-size: 46px;
   color: #f9f6f2;
   background-color: #edc850;
 }
 .game-2048-board [num="1024"] i {
-  font-size: 23px;
+  font-size: 34.5px;
   color: #f9f6f2;
   background-color: #edc53f;
 }
 .game-2048-board [num="2048"] i {
-  font-size: 23px;
+  font-size: 34.5px;
   color: #f9f6f2;
   background-color: #edc22e;
 }
 .game-2048-board [num="super"] i {
-  font-size: 23px;
+  font-size: 28.75px;
   color: #f9f6f2;
   background-color: #3c3a32;
 }
