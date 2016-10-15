@@ -1,7 +1,7 @@
 var $ = require('jquery')
 
 function MessageBox(el) {
-	this.$el = $(el || '.message-box')
+	this.$el = $(el || '.game-message')
 	var self = this
 	this.$el.on('click', function () {
 		self.hide()

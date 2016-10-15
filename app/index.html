@@ -2,37 +2,40 @@
 <html>
 <head>
 	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>2048</title>
 	<link rel="stylesheet" href="app.css">
 </head>
-<body class="game-2048">
+<body>
 
-	<header>
-		<p><button class="new-round">New Round</button></p>
-		<p class="message"></p>
-	</header>
-
-	<div class="board">
-		<div data-row="0" data-col="0" class="cell cell-0-0" num="2">2</div>
-		<div data-row="0" data-col="1" class="cell cell-0-1" num="no"></div>
-		<div data-row="0" data-col="2" class="cell cell-0-2" num="no"></div>
-		<div data-row="0" data-col="3" class="cell cell-0-3" num="no"></div>
-
-		<div data-row="1" data-col="0" class="cell cell-1-0" num="no"></div>
-		<div data-row="1" data-col="1" class="cell cell-1-1" num="4">4</div>
-		<div data-row="1" data-col="2" class="cell cell-1-2" num="256">256</div>
-		<div data-row="1" data-col="3" class="cell cell-1-3" num="no"></div>
-
-		<div data-row="2" data-col="0" class="cell cell-2-0" num="no"></div>
-		<div data-row="2" data-col="1" class="cell cell-2-1" num="no"></div>
-		<div data-row="2" data-col="2" class="cell cell-2-2" num="512">512</div>
-		<div data-row="2" data-col="3" class="cell cell-2-3" num="no"></div>
-
-		<div data-row="3" data-col="0" class="cell cell-3-0" num="2048">2048</div>
-		<div data-row="3" data-col="1" class="cell cell-3-1" num="1024">1024</div>
-		<div data-row="3" data-col="2" class="cell cell-3-2" num="no"></div>
-		<div data-row="3" data-col="3" class="cell cell-3-3" num="no"></div>
+<div class="game">
+	<div class="game-cmds">
+		<button class="new-round">New Round</button>
+		<div class="game-moves"></div>
 	</div>
+	<p class="game-message"></p>
+	<div class="game-2048-board">
+		<div data-row="0" data-col="0" class="cell cell-0-0"><i></i></div>
+		<div data-row="0" data-col="1" class="cell cell-0-1"><i></i></div>
+		<div data-row="0" data-col="2" class="cell cell-0-2"><i></i></div>
+		<div data-row="0" data-col="3" class="cell cell-0-3"><i></i></div>
+
+		<div data-row="1" data-col="0" class="cell cell-1-0"><i></i></div>
+		<div data-row="1" data-col="1" class="cell cell-1-1"><i></i></div>
+		<div data-row="1" data-col="2" class="cell cell-1-2"><i></i></div>
+		<div data-row="1" data-col="3" class="cell cell-1-3"><i></i></div>
+
+		<div data-row="2" data-col="0" class="cell cell-2-0"><i></i></div>
+		<div data-row="2" data-col="1" class="cell cell-2-1"><i></i></div>
+		<div data-row="2" data-col="2" class="cell cell-2-2"><i></i></div>
+		<div data-row="2" data-col="3" class="cell cell-2-3"><i></i></div>
+
+		<div data-row="3" data-col="0" class="cell cell-3-0"><i></i></div>
+		<div data-row="3" data-col="1" class="cell cell-3-1"><i></i></div>
+		<div data-row="3" data-col="2" class="cell cell-3-2"><i></i></div>
+		<div data-row="3" data-col="3" class="cell cell-3-3"><i></i></div>
+	</div>
+</div>
 
 <script src="http://code.jquery.com/jquery-2.1.1.min.js"></script>
 <script src="app.js"></script>

@@ -4,31 +4,60 @@ var Game = require('./game')
 
 $(function () {
 	var game = new Game()
+	var $moves = $('.game-moves')
+
+	$('body').on('click', '.new-round', function () {
+		game.newRound()
+	})
+
+	game.on('move', function (e) {
+		$moves.text(e.moves.length)
+	})
+
+	game.on('newRound gameOver', function () {
+		$moves.empty()
+	})
+
+	game.newRound()
 })
 },{"./game":2,"jquery":4}],2:[function(require,module,exports){
 var $ = require('jquery')
-var Numbers = require('./numbers')
 var Keys = require('keys')
+var Numbers = require('./numbers')
 var MessageBox = require('./message-box')
 
 var MOVE_ANIMATION_TIME = 200 // ms
 
 function Game(el) {
-	this.$el = $(el || '.game-2048')
-	this.$board = this.$el.find('.board')
+	this.$el = $(el || '.game-2048-board')
+	this.$board = this.$el
 	this.msgBox = new MessageBox()
 
-	this.$el.on('click', '.new-round', $.proxy(function () {
-		this.newRound()
-	}, this))
-
-	$(document).on('keydown', $.proxy(this.onKeydown, this))
+	this.initEvents()
 }
 
 $.extend(Game.prototype, {
 
+	/* events */
+
+	on: function () {
+		this.$el.on.apply(this.$el, arguments)
+	},
+	off: function () {
+		this.$el.off.apply(this.$el, arguments)
+	},
+	trigger: function () {
+		this.$el.trigger.apply(this.$el, arguments)
+	},
+
+	initEvents: function () {
+		$(document).on('keydown', $.proxy(this.onKeydown, this))
+	},
+
 	newRound: function () {
 		this.numbers = new Numbers();
+		this.moves = []
+
 		this.msgBox.hide();
 
 		this.renderNumbers();
@@ -36,6 +65,8 @@ $.extend(Game.prototype, {
 		this.addRandomNumber();
 
 		this.running = true;
+
+		this.trigger('newRound')
 	},
 
 	// TODO bug 不能正确检测游戏结束情况
@@ -44,6 +75,7 @@ $.extend(Game.prototype, {
 		if (!this.numbers.canMerge()) {
 			this.running = false;
 			this.msgBox.show("Game Over!");
+			this.trigger('gameOver')
 		}
 
 		this.numbers.forEach($.proxy(function (n) {
@@ -71,20 +103,33 @@ $.extend(Game.prototype, {
 		var move
 
 		switch (key) {
-			case Keys.Left:  move = this.numbers.moveLeft();  break;
-			case Keys.Up:    move = this.numbers.moveUp();    break;
-			case Keys.Right: move = this.numbers.moveRight(); break;
-			case Keys.Down:  move = this.numbers.moveDown();  break;
+			case Keys.Left:
+				move = this.numbers.moveLeft()
+				break
+			case Keys.Up:
+				move = this.numbers.moveUp()
+				break
+			case Keys.Right:
+				move = this.numbers.moveRight()
+				break
+			case Keys.Down:
+				move = this.numbers.moveDown()
+				break
 		}
 
 		// 没有产生任何变化时不做处理
 		if (move && move.length > 0) {
+			this.moves.push(move)
 			this.showMove(move)
 
 			// 等待动画完成
 			this.actionTimer = setTimeout($.proxy(function () {
 				this.actionTimer = null
 				if (!this.isGameOver()) {
+					this.trigger({
+						type: 'move',
+						moves: this.moves
+					})
 					this.addRandomNumber()
 					this.isGameOver()
 				}
@@ -95,7 +140,7 @@ $.extend(Game.prototype, {
 	renderNumbers: function () {
 		this.numbers.forEach($.proxy(function (num, row, col) {
 			this.showNumber(row, col, num)
-		}, this));
+		}, this))
 	},
 
 	/*
@@ -108,28 +153,37 @@ $.extend(Game.prototype, {
 	},
 
 	showMoveStep: function (step) {
+		var game = this
 		var from = step.from
 		var to = step.to
 		var $cellFrom = this.getCell(from[0], from[1])
 		var $cellFromClone = $cellFrom.clone().css('z-index', '1')
 		var $cellTo = this.getCell(to[0], to[1])
 
-		$cellFrom.text('').attr('num', 'no')
+		game.updateCell($cellFrom, 0)
 
 		this.$board.append($cellFromClone)
 		$cellFromClone.attr('data-row', to[0]).attr('data-col', to[1])
 
 		setTimeout(function () {
 			var result = step.result
-			$cellTo.text(result).attr('num', result > 2048 ? 'super' : result)
+			game.updateCell($cellTo, result)
 			$cellFromClone.remove()
 		}, MOVE_ANIMATION_TIME)
 	},
 
 	showNumber: function (row, col, num) {
-		this.getCell(row, col)
+		this.updateCell(this.getCell(row, col), num)
+	},
+
+	updateCell: function ($cell, num) {
+		$cell.attr('num',
+				num === 0 ?
+					"no" :
+					num > 2048 ? "super" : num
+			)
+			.find('i')
 			.text(num === 0 ? "" : num)
-			.attr('num', num === 0 ? "no" : num > 2048 ? "super" : num)
 	},
 
 	addRandomNumber: function () {
@@ -151,12 +205,12 @@ $.extend(Game.prototype, {
 		return {
 			row: parseInt($cell.attr("data-row"), 10),
 			col: parseInt($cell.attr("data-col"), 10)
-		};
+		}
 	},
 
 	// 随机数为 2 或 4
 	getRandomNumber: function () {
-		return Math.random() > 0.5 ? 2 : 4;
+		return Math.random() > 0.5 ? 2 : 4
 	},
 
 	getCell: function (row, col) {
@@ -169,7 +223,7 @@ module.exports = Game
 var $ = require('jquery')
 
 function MessageBox(el) {
-	this.$el = $(el || '.message-box')
+	this.$el = $(el || '.game-message')
 	var self = this
 	this.$el.on('click', function () {
 		self.hide()
