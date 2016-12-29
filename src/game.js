@@ -1,5 +1,5 @@
 var $ = require('jquery')
-var Keys = require('keys')
+var Keys = require('./keys')
 var Numbers = require('./numbers')
 var MessageBox = require('./message-box')
 

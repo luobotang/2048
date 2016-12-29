@@ -1,4 +1,4 @@
-(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+require=(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 var $ = require('jquery')
 var Game = require('./game')
 
@@ -20,9 +20,13 @@ $(function () {
 
 	game.newRound()
 })
-},{"./game":2,"jquery":4}],2:[function(require,module,exports){
+
+if (location.protocol.indexOf('http') > -1 && 'serviceWorker' in navigator) {
+  navigator.serviceWorker.register('service-worker.js', {scope: './'})
+}
+},{"./game":2,"jquery":"jquery"}],2:[function(require,module,exports){
 var $ = require('jquery')
-var Keys = require('keys')
+var Keys = require('./keys')
 var Numbers = require('./numbers')
 var MessageBox = require('./message-box')
 
@@ -219,7 +223,14 @@ $.extend(Game.prototype, {
 })
 
 module.exports = Game
-},{"./message-box":3,"./numbers":6,"jquery":4,"keys":5}],3:[function(require,module,exports){
+},{"./keys":3,"./message-box":4,"./numbers":5,"jquery":"jquery"}],3:[function(require,module,exports){
+module.exports = {
+	Left: 37,
+	Up: 38,
+	Right: 39,
+	Down: 40
+}
+},{}],4:[function(require,module,exports){
 var $ = require('jquery')
 
 function MessageBox(el) {
@@ -243,16 +254,7 @@ $.extend(MessageBox.prototype, {
 })
 
 module.exports = MessageBox
-},{"jquery":4}],4:[function(require,module,exports){
-module.exports = window.jQuery
-},{}],5:[function(require,module,exports){
-module.exports =  {
-	Left: 37,
-	Up: 38,
-	Right: 39,
-	Down: 40
-}
-},{}],6:[function(require,module,exports){
+},{"jquery":"jquery"}],5:[function(require,module,exports){
 var ROW_COUNT = 4
 var COL_COUNT = 4
 
@@ -518,4 +520,6 @@ Numbers.prototype = {
 }
 
 module.exports = Numbers
+},{}],"jquery":[function(require,module,exports){
+module.exports = window.jQuery
 },{}]},{},[1]);

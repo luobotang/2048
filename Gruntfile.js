@@ -16,6 +16,11 @@ module.exports = function(grunt) {
     },
     browserify: {
       build: {
+        options: {
+          alias: {
+            jquery: './src/jquery.js'
+          }
+        },
         src: 'src/app.js',
         dest: "app/app.js"
       }
