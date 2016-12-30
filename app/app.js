@@ -22,7 +22,11 @@ $(function () {
 })
 
 if (location.protocol.indexOf('http') > -1 && 'serviceWorker' in navigator) {
-  navigator.serviceWorker.register('service-worker.js', {scope: './'})
+	if (location.pathname.indexOf('/2048/app/') > -1) {
+		navigator.serviceWorker.register('service-worker-online.js', {scope: './'})
+	} else {
+		navigator.serviceWorker.register('service-worker.js', {scope: './'})
+	}
 }
 },{"./game":2,"jquery":"jquery"}],2:[function(require,module,exports){
 var $ = require('jquery')

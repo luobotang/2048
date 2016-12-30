@@ -7,6 +7,10 @@ var cacheFiles = [
   '/404.html'
 ];
 
+cacheFiles = cacheFiles.map(function (path) {
+  return '/2048/app' + path;
+});
+
 this.addEventListener('install', function(event) {
   event.waitUntil(
     caches.open('v1').then(function(cache) {
