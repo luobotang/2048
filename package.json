@@ -1,6 +1,6 @@
 {
   "name": "luobo-2048",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "description": "A 2048 Game by JavaScript",
   "main": "app/index.html",
   "scripts": {
