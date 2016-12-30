@@ -9,4 +9,5 @@ JavaScript 实现的 2048 网页游戏
 ## 示例
 
 <http://luobotang.github.io/2048/app/>
+
 ![](2048.png)
